@@ -3,3 +3,4 @@
 // router.use('/bootstrap', express.static(path.join(__dirname, "../node_modules/bootstrap/dist")));
 // readme 정리 필요
 // front 작업 먼저 완료
+// 다이어그램 정리해서 업로드
