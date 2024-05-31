@@ -1,25 +1,25 @@
-const express    = require('express');
-const mysql      = require('mysql');
-const dbconfig   = require('./config/database.js');
-const connection = mysql.createConnection(dbconfig);
+import { getPlayerData } from './api/player.js';
+import { getMatchData } from './api/match.js';
 
-const app = express();
+const apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzNzU4NmNlMC0wMGRmLTAxM2QtNjY1OS03Mjg4MjY0ZTZmZDAiLCJpc3MiOiJnYW1lbG9ja2VyIiwiaWF0IjoxNzE3MDkzMjI4LCJwdWIiOiJibHVlaG9sZSIsInRpdGxlIjoicHViZyIsImFwcCI6Ii1iNzhjYTNjOC1mOTJhLTQ0OGQtYjk4YS0yMjJjYmNlMzQ5ZTQifQ.1FaQ1WChB42iVhwgJKmza8JYZ6qBs0JaJaRrt6-NIOs';
+const username = 'shacomadmovie';
 
-// configuration =========================
-app.set('port', process.env.PORT || 3000);
+async function main() {
+  try {
+    const playerData = await getPlayerData(apiKey, username, fetch);
+    console.log('Player Data:');
+    console.log('Name:', playerData.playerFullName);
+    console.log('Stats:', playerData.playerStats);
 
-app.get('/', (req, res) => {
-  res.send('Root');
-});
+    const matchData = await getMatchData(apiKey, playerData.playerMatchIds, fetch);
+    console.log('Match Data:');
+    matchData.forEach(match => {
+      console.log('Duration:', match.matchDuration, 'seconds');
+      console.log('Created At:', match.matchCreatedAt);
+    });
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
 
-app.get('/users', (req, res) => {
-  connection.query('SELECT * from member', (error, rows) => {
-    if (error) throw error;
-    console.log('User info is: ', rows);
-    res.send(rows);
-  });
-});
-
-app.listen(app.get('port'), () => {
-  console.log('Express server listening on port ' + app.get('port'));
-});
+main();
